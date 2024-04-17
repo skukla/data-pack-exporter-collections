@@ -1,0 +1,1895 @@
+{
+	"info": {
+		"_postman_id": "30b590a2-4ac0-4749-895b-9d5cddc715b6",
+		"name": "Data Exporter",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2085683"
+	},
+	"item": [
+		{
+			"name": "Lists",
+			"item": [
+				{
+					"name": "Admin Roles List",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($adminRolesList: [String]) {\n\tadminRoles(identifiers: $adminRolesList) {\n\t\titems {\n\t\t\trole\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"adminRolesList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of admin roles.\n\nSet the input to an empty string `identifiers: [\"\"]`. This will also only return a list of distinct roles and not resources.\n\nDefault roles of `admin` and `Administrator` are not included.\n\n`role_id` can also be included in the items node, but it not necessary for a data pack"
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Users List",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($adminUserList: [String]){\n\tadminUsers(identifiers: $adminUserList) {\n\t\titems {\n\t\t\trole\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"adminUserList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of admin users.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\nDefault `admin` user is not included. \n\n`user_id` can also be included in the items node, but is not necessary for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "B2B Companies List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($companyList: [String], $usersPageSize: Int, $usersCurrentPage: Int, $requisitionListsPageSize: Int, $requisitionListsCurrentPage: Int) {\n\tcompanies(identifiers: $companyList) {\n\t\titems {\n\t\t\tsite_code\n\t\t\tlegal_name\n\t\t\tcompany_name:name\n\t\t\tcompany_email:email\n\t\t\taddress:legal_address {\n\t\t\t\tcity\n\t\t\t\tcountry_id:country_code\n\t\t\t\tpostcode\n\t\t\t\tregion{\n\t\t\t\t\tregion:region_code\n\t\t\t\t}\n\t\t\t\tstreet\n\t\t\t\ttelephone\n\t\t\t}\n\t\t\treseller_id\n\t\t\tvat_tax_id\n\t\t\t\n\t\t\tcompany_admin{\n\t\t\t\temail\n\t\t\t}\n\t\t\tapproval_rules {\n\t\t\t\titems {\n\t\t\t\t\tname\n\t\t\t\t\tdescription\n\t\t\t\t\tis_active\n\t\t\t\t\tapply_to_roles\n\t\t\t\t\tconditions_serialized\n\t\t\t\t\tapproval_from\n\t\t\t\t\trequires_admin_approval\n\t\t\t\t\trequires_manager_approval\n\t\t\t\t\tapplies_to_all\n\t\t\t\t\tcreated_by\n\t\t\t\t}\n\t\t\t}\n\t\t\tshared_catalog {\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\ttype\n\t\t\t\tcategories {\n\t\t\t\t\tpath\n\t\t\t\t}\n\t\t\t}\n\t\t\tcredit_export {\n\t\t\t\tcredit_limit {\n\t\t\t\t\tvalue\n\t\t\t\t}\n\t\t\t}\n\t\t\tsales_representative {\n\t\t\t\tfirstname\n\t\t\t\tlastname\n\t\t\t\temail\n\t\t\t\tusername\n\t\t\t\trole\n\t\t\t\tpassword:placeholder_password\n\t\t\t}\n\t\t\t\tusers_export(filter: {}, pageSize: $usersPageSize, currentPage: $usersCurrentPage) {\n\t\t\t\titems {\n\t\t\t\t\tfirstname\n\t\t\t\t\tlastname\n\t\t\t\t\temail\n\t\t\t\t\tpassword:placeholder_password\n\t\t\t\t\tadd_to_autofill\n\t\t\t\t\taddresses {\n\t\t\t\t\t\tstreet\n\t\t\t\t\t\tcity\n\t\t\t\t\t\tregion {\n\t\t\t\t\t\t\tregion\n\t\t\t\t\t\t}\n\t\t\t\t\t\tpostcode\n\t\t\t\t\t\ttelephone\n\t\t\t\t\t\tcountry_id:country_code\n\t\t\t\t\t}\n\t\t\t\t\trole {\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t\tteam {\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t\trequisition_lists_export(pageSize: $requisitionListsPageSize, currentPage: $requisitionListsCurrentPage) {\n\t\t\t\t\t\titems {\n\t\t\t\t\t\t\tname\n\t\t\t\t\t\t\tdescription\n\t\t\t\t\t\t\t\titems {\n\t\t\t\t\t\t\t\t\titems {\n\t\t\t\t\t\t\t\t\t\tproduct {\n\t\t\t\t\t\t\t\t\t\t\tsku\n            \t\t\t\t\t\t\t}\n            \t\t\t\t\t\tquantity\n          \t\t\t\t\t\t\t}\n        \t\t\t\t\t\t}\n      \t\t\t\t\t\t}\n    \t\t\t\t\t}\n  \t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\troles_export {\n\t\t\t\t\titems {\n\t\t\t\t\t\tname\n\t\t\t\t\t\tpermissions {\n\t\t\t\t\t\t\tid\n\t\t\t\t\t\tchildren {\n\t\t\t\t\t\t\tid\n\t\t\t\t\t\t\tchildren {\n\t\t\t\t\t\t\t\tid\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n    publicSharedCatalog {\n        name\n        description\n        type\n        categories {\n            path\n        }\n    }\n}",
+								"variables": "{\n    \"companyList\": [\"\"],\n    \"usersPageSize\": 20,\n    \"usersCurrentPage\": 1,\n    \"requsitionListsPageSize\": 20,\n    \"requsitionListsCurrentPage\": 1\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of companies with their associated details, including:\n\n1. Users\n2. Company Admin\n3. Teams\n4. Roles and Permissions\n5. Approval rules\n6. Credit Limit\n7. Sales Representative User\n8. Shared Catalog\n9. Public Shared Catalog\n    \n\nSet the input to an empty string `identifiers: [\"\"]`."
+					},
+					"response": []
+				},
+				{
+					"name": "Blocks List",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n\tcmsBlocksList{\n\t\titems {\n\t\t\tstore_view_code\n\t\t\ttitle\n\t\t\tidentifier\n\t\t\tblock_id\n\t\t}\n\t}\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of all CMS Blocks.\n\nNot needed for a data pack, but used to drive a UI selection list.\n\nAll data that is returned from`cmsBlocks`query can be returned."
+					},
+					"response": []
+				},
+				{
+					"name": "Cart Rules List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($cartRuleList: [String]) {\n\tcartRules(identifiers: $cartRuleList) {\n\t\titems {\n\t\t\trule_id\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"cartRuleList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of cart price rules.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`rule_id` is also available, but not necessary for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "Catalog Rules List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($catalogRuleList: [String]) {\n\tcatalogRules(identifiers: $catalogRuleList) {\n\t\titems {\n\t\t\trule_id\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"catalogRuleList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of catalog price rules.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`rule_id` is also available, but not necessary for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Attributes List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($entityType: [String]) {\n\tattributeList(entityType: $entityType) {\n\t\titems {\n\t\t\tattribute_code\n\t\t\tdefault_label\n\t\t\tscope\n\t\t\tis_core\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"entityType\": [\"customer\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Used to display user defined attributes for selection from a UI.\n\nThe same query can be used across all attribute types, but only `customer` and `catalog_product` are currently supported by data installer.\n\nThe `is_core` flag indicates attributes that are installed by the core code but are still classified as user defined and not system. It is likely that these attributes do not need to be exported unless they have been edited.\n\nThis list will also return any attributes installed by extensions or sample data. For example the Luma sample data will include product attributes like `size`, `material` and `activity`. Unless those attributes have been edited or are used by the current data pack, it is likley they will not be need to be included."
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Groups List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($customerGroupList: [String]) {\n  customerGroups(\n    identifiers: $customerGroupList\n  ) {\n    items {\n      group_id\n    }\n  }\n}",
+								"variables": "{\n    \"customerGroupList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of all customer groups.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`group_id` is also available, but not necessary for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Segments List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($customerSegmentList: [String]) {\n\tcustomerSegments(identifiers: $customerSegmentList){\n\t\t\titems {\n  \t\t\t\tsegment_id\n\t\t\t}\n\t}\n}",
+								"variables": "{\n    \"customerSegmentList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of customer segments.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`segment_id` is also available, but not necessary for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "Customers List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n\tcustomerList {\n\t\titems {\n\t\temail\n\t\t}\n\t}\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of all Customers.\n\nNot needed for a data pack, but used to drive a UI selection list.\n\nNo filtering is currently supported."
+					},
+					"response": []
+				},
+				{
+					"name": "Dynamic Blocks List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($dynamicBlockList: [String]) {\n\tdynamicBlocksExport(identifiers: $dynamicBlockList) {\n\t\titems {\n\t\t\tbanner_id\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"dynamicBlockList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to return a list of CMS Dynamic Blocks.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\nUse `banner_id` or `name`in the `items` array."
+					},
+					"response": []
+				},
+				{
+					"name": "MSI Sources List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($warehouseList: [String]) {\n\tmsiSource(identifiers: $warehouseList){\n\t\titems {\n\t\t\tsource_code\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"warehouseList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of MSI sources.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`default` source will not be included with this method."
+					},
+					"response": []
+				},
+				{
+					"name": "MSI Stocks List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($stockList: [String]) {\n\tmsiStock(identifiers: $stockList){\n\t\titems {\n\t\t\tstock_name\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"stockList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of MSI stocks.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`stock_id` is also available but not needed for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "Page Builder Templates List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($templatesList: [String]) {\n\tpageBuilderTemplates(identifiers: $templatesList) {\n\t\titems {\n\t\t\tcontent\n\t\t\tcreated_for\n\t\t\tname\n\t\t\tpreview_image\n\t\t\trequires{\n\t\t\t\tid\n\t\t\t\tidentifier\n\t\t\t\tname\n\t\t\t\ttype\n\t\t\t}\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"templatesList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to return a list of Page Builder templates via the`templates.json` file. Include the template names or Ids you want to include in the export.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\nUse `template_id` or`name`in the `items`array."
+					},
+					"response": []
+				},
+				{
+					"name": "Pages List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($pageList: [String]) {\n\tcmsPages(identifiers: $pageList){\n\t\t\titems {\n  \t\t\t\tpage_id,\n                title\n\t\t\t}\n\t}\n}",
+								"variables": "{\n    \"pageList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to return a list of CMS Pages.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\nUse `page_id` or `identifier`in the `items`array."
+					},
+					"response": []
+				},
+				{
+					"name": "Product Attribute List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($entityType: [String]) {\n\tattributeList(entityType: $entityType) {\n\t\titems {\n\t\t\tattribute_code\n\t\t\tdefault_label\n\t\t\tscope\n\t\t\tis_core\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"entityType\": [\"catalog_product\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Used to display user defined attributes for selection from a UI. The same query can be used across all attribute types, but only `customer` and `catalog_product` are currently supported by data installer.\n\nThe `is_core` flag indicates attributes that are installed by the core code but are still classified as user defined and not system. It is likely that these attributes do not need to be exported unless they have been edited.\n\nThis list will also return any attributes installed by extensions or sample data. For example the Luma sample data will include product attributes like `size`, `material` and `activity`. Unless those attributes have been edited or are used by the current data pack, it is likley they will not be need to be included."
+					},
+					"response": []
+				},
+				{
+					"name": "Reward Exchange Rate List",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($exchangeRuleList: [String]) {\n\trewardsPointsExchangeRate(identifiers: $exchangeRuleList) {\n\t\titems {\n\t\t\trate_id\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"exchangeRuleList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of reward point exchange rates.\n\nSet the input to an empty string `identifiers: [\"\"]`. \n\n`rate_id` is also available, but not necessary for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "Stores List",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n\tstoreList {\n\t\titems {\n\t\t\tstore_code\n\t\t\tstore_name\n\t\t\tgroup_code\n\t\t\tgroup_name\n\t\t\twebsite_code\n\t\t\twebsite_name\n\t\t}\n\t}\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Retrieves a list of stores.\n\nNot needed for a data pack, but could be used to drive UI selection.\n\nGroup equates to Store in the UI, Store equates to View."
+					},
+					"response": []
+				},
+				{
+					"name": "Upsells List",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($upsellsList: [String]) {\n\tupsells(identifiers: $upsellsList) {\n\t\titems {\n\t\t\trule_id\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"upsellsList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of related products and upsell rules.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`rule_id` is also available, but not necessary for a data pack."
+					},
+					"response": []
+				},
+				{
+					"name": "Widgets  List",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($widgetList: [String]) {\n\twidgets(identifiers: $widgetList) {\n\t\titems {\n\t\t\twidget_id\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"widgetList\": [\"\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Returns a list of widgets.\n\nSet the input to an empty string `identifiers: [\"\"]`.\n\n`widget_id` is also available, but not necessary for a data pack.\n\n`ui_type` is also available if a UI friendly version of type needs to be displayed.\n\n**Note:** only single layout update is supported. If multiple layout updates are defined, only the first is exported."
+					},
+					"response": []
+				}
+			],
+			"description": "These queries allow users to retrieve lists of data elements for use in export queries."
+		},
+		{
+			"name": "Exports",
+			"item": [
+				{
+					"name": "Admin Roles",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($adminRolesList: [String]) {\n\tadminRoles(identifiers: $adminRolesList) {\n\t\titems {\n\t\t\trole\n\t\t\tresource_id\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"adminRolesList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`admin_roles.json`file. Include the role names or Ids you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Users",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($adminUserList: [String]){\n\tadminUsers(identifiers: $adminUserList) {\n\t\titems {\n\t\t\temail\n\t\t\tfirstname\n\t\t\tlastname\n\t\t\tpassword\n\t\t\trole\n\t\t\tusername\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"adminUserList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `admin_users.json` file. Include the admin user names or IDs you want to include in the export.\n\nAs passwords cannot be decoded, `password` will return a static value of `Password1`."
+					},
+					"response": []
+				},
+				{
+					"name": "Advanced Pricing",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($productCategoryList: [String]) {\n\tadvancedPricingExport(categoryIds: $productCategoryList) {\n\t\tdata\n\t}\n}",
+								"variables": "{\n    \"productCategoryList\": \"4, 5\"\n}"
+							}
+						},
+						"url": {
+							"raw": "https://{{baseUrl}}/graphql",
+							"protocol": "https",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`advanced_pricing.json`file.\n\nCreates the same data set as a native advanced pricing export.\n\nAt this time, the only product filter that is supported is a list of category IDs to export products from."
+					},
+					"response": []
+				},
+				{
+					"name": "B2B Companies",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($companyList: [String], $usersPageSize: Int, $usersCurrentPage: Int, $requisitionListsPageSize: Int, $requisitionListsCurrentPage: Int) {\n\tcompanies(identifiers: $companyList) {\n\t\titems {\n\t\t\tsite_code\n\t\t\tlegal_name\n\t\t\tcompany_name:name\n\t\t\tcompany_email:email\n\t\t\taddress:legal_address {\n\t\t\t\tcity\n\t\t\t\tcountry_id:country_code\n\t\t\t\tpostcode\n\t\t\t\tregion{\n\t\t\t\t\tregion:region_code\n\t\t\t\t}\n\t\t\t\tstreet\n\t\t\t\ttelephone\n\t\t\t}\n\t\t\treseller_id\n\t\t\tvat_tax_id\n\t\t\t\n\t\t\tcompany_admin{\n\t\t\t\temail\n\t\t\t}\n\t\t\tapproval_rules {\n\t\t\t\titems {\n\t\t\t\t\tname\n\t\t\t\t\tdescription\n\t\t\t\t\tis_active\n\t\t\t\t\tapply_to_roles\n\t\t\t\t\tconditions_serialized\n\t\t\t\t\tapproval_from\n\t\t\t\t\trequires_admin_approval\n\t\t\t\t\trequires_manager_approval\n\t\t\t\t\tapplies_to_all\n\t\t\t\t\tcreated_by\n\t\t\t\t}\n\t\t\t}\n\t\t\tshared_catalog {\n\t\t\t\tname\n\t\t\t\tdescription\n\t\t\t\ttype\n\t\t\t\tcategories {\n\t\t\t\t\tpath\n\t\t\t\t}\n\t\t\t}\n\t\t\tcredit_export {\n\t\t\t\tcredit_limit {\n\t\t\t\t\tvalue\n\t\t\t\t}\n\t\t\t}\n\t\t\tsales_representative {\n\t\t\t\tfirstname\n\t\t\t\tlastname\n\t\t\t\temail\n\t\t\t\tusername\n\t\t\t\trole\n\t\t\t\tpassword:placeholder_password\n\t\t\t}\n\t\t\t\tusers_export(filter: {}, pageSize: $usersPageSize, currentPage: $usersCurrentPage) {\n\t\t\t\titems {\n\t\t\t\t\tfirstname\n\t\t\t\t\tlastname\n\t\t\t\t\temail\n\t\t\t\t\tpassword:placeholder_password\n\t\t\t\t\tadd_to_autofill\n\t\t\t\t\taddresses {\n\t\t\t\t\t\tstreet\n\t\t\t\t\t\tcity\n\t\t\t\t\t\tregion {\n\t\t\t\t\t\t\tregion\n\t\t\t\t\t\t}\n\t\t\t\t\t\tpostcode\n\t\t\t\t\t\ttelephone\n\t\t\t\t\t\tcountry_id:country_code\n\t\t\t\t\t}\n\t\t\t\t\trole {\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t\tteam {\n\t\t\t\t\t\tname\n\t\t\t\t\t}\n\t\t\t\t\trequisition_lists_export(pageSize: $requisitionListsPageSize, currentPage: $requisitionListsCurrentPage) {\n\t\t\t\t\t\titems {\n\t\t\t\t\t\t\tname\n\t\t\t\t\t\t\tdescription\n\t\t\t\t\t\t\t\titems {\n\t\t\t\t\t\t\t\t\titems {\n\t\t\t\t\t\t\t\t\t\tproduct {\n\t\t\t\t\t\t\t\t\t\t\tsku\n            \t\t\t\t\t\t\t}\n            \t\t\t\t\t\tquantity\n          \t\t\t\t\t\t\t}\n        \t\t\t\t\t\t}\n      \t\t\t\t\t\t}\n    \t\t\t\t\t}\n  \t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\troles_export {\n\t\t\t\t\titems {\n\t\t\t\t\t\tname\n\t\t\t\t\t\tpermissions {\n\t\t\t\t\t\t\tid\n\t\t\t\t\t\tchildren {\n\t\t\t\t\t\t\tid\n\t\t\t\t\t\t\tchildren {\n\t\t\t\t\t\t\t\tid\n\t\t\t\t\t\t\t}\n\t\t\t\t\t\t}\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t}\n    publicSharedCatalog {\n        name\n        description\n        type\n        categories {\n            path\n        }\n    }\n}",
+								"variables": "{\n    \"companyList\": [\"1\", \"2\"],\n    \"usersPageSize\": 20,\n    \"usersCurrentPage\": 1,\n    \"requsitionListsPageSize\": 20,\n    \"requsitionListsCurrentPage\": 1\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`b2b_companies.json`file. Include the company names or IDs you want to include in the export.\n\nShould include the following company information:\n\n1. Users\n    \n2. Company Admin\n    \n3. Teams\n    \n4. Roles and Permissions\n    \n5. Approval rules\n    \n6. Credit Limit\n    \n7. Sales Representative User\n    \n8. Shared Catalog\n    \n9. Public Shared Catalog"
+					},
+					"response": []
+				},
+				{
+					"name": "Blocks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($blockList: [String]) {\n\tcmsBlocks(identifiers: $blockList) {\n\t\titems {\n\t\t\tstore_view_code\n\t\t\ttitle\n\t\t\tidentifier\n\t\t\tcontent:block_content\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"blockList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`blocks.json`file. Include the block identifiers or Ids you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Cart Rules",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($cartRuleList: [String]) {\n\tcartRules(identifiers: $cartRuleList) {\n\t\titems {\n\t\t\tactions_serialized\n\t\t\tapply_to_shipping\n\t\t\tconditions_serialized\n\t\t\tcoupon_code\n\t\t\tcoupon_type\n\t\t\tcustomer_group\n\t\t\tdescription\n\t\t\tdiscount_amount\n\t\t\tdiscount_qty\n\t\t\tdiscount_step\n\t\t\tis_advanced\n\t\t\tis_rss\n\t\t\tname\n\t\t\treward_points_delta\n\t\t\tsimple_action\n\t\t\tsimple_free_shipping\n\t\t\tsite_code\n\t\t\tsort_order\n\t\t\tstop_rules_processing\n\t\t\ttimes_used\n\t\t\tuse_auto_generation\n\t\t\tuses_per_coupon\n\t\t\tuses_per_customer\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"cartRuleList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`cart_rules.json`file. Include the cart rule names or IDs you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Catalog Rules",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($catalogRuleList: [String]) {\n\tcatalogRules(identifiers: $catalogRuleList) {\n\t\titems {\n\t\t\tactions_serialized\n\t\t\tconditions_serialized\n\t\t\tcustomer_groups\n\t\t\tdescription\n\t\t\tdiscount_amount\n\t\t\tdynamic_blocks\n\t\t\tname\n\t\t\tsimple_action\n\t\t\tsite_code\n\t\t\tsort_order\n\t\t\tstop_rules_processing\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"catalogRuleList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`catalog_rules.json`file. Include the catalog rule names or IDs you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Categories",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($categoryIdList: [String], $pageSize: Int)  {\n\tcategories(filters: {  parent_id: {in: $categoryIdList}} pageSize: $pageSize) {\n\titems {\n\t\tid\n\t\tstore_view_code\n\t\toriginal_name:name\n\t\tname:category_name\n\t\turl_key\n\t\turl_path\n\t\tid_path:path\n\t\tpath:name_path\n\t\tinclude_in_menu\n\t\tis_active\n\t\tis_anchor\n\t\tposition\n\t\tlanding_page_id:landing_page\n\t\tlanding_page:landing_page_identifier\n\t\tdescription_org:description\n\t\tdescription:description_import_content\n\t\tdisplay_mode\n\t\tmeta_description\n\t\tmeta_keywords\n\t\tmeta_title\n\t\tpage_layout\n\t\tcustom_design_id:custom_design\n\t\tcustom_design:custom_design_theme\n\t\trequires{\n\t\t\tid\n\t\t\tidentifier\n\t\t\tname\n\t\t\ttype\n\t\t\t}\n\t\t}\n    }\n}",
+								"variables": "{\n    \"categoryIdList\": [\"2\",\"3\"],\n    \"pageSize\": 5000\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `categories.json` file. For the complete list of filtering options, see the GraphQL DevDocs."
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Addresses",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n\tcustomerAddressExport{\n\t\tdata\n\t}\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`customer_addresses.json`file. Creates the same data set as a native customer address export. At this time no filters are supported."
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Attributes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($customerAttributes: [AttributeInput!]!) {\n  customAttributeMetadata(\n    attributes: $customerAttributes\n  ) {\n    items {\n      attribute_code\n      store_view_code\n      frontend_input: input_type\n      attribute_options {\n        label\n      }\n      admin_properties {\n        is_visible\n        frontend_label\n        is_filterable_in_grid\n        is_used_in_grid\n        is_visible_in_grid\n        is_required\n        is_used_for_customer_segment\n        sort_order\n        used_in_forms\n      }\n    }\n  }\n}",
+								"variables": "{\n    \"customerAttributes\": \n    [\n        {\n            \"attribute_code\": \"created_at\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"updated_at\",\n            \"entity_type\": \"customer\"\n        }, \n        {\n            \"attribute_code\": \"website_id\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"created_in\",\n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"group_id\",\n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"disable_auto_group_change\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"prefix\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"firstname\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"middlename\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"lastname\", \n            \"entity_type\": \"customer\"\n        }, \n        {\n            \"attribute_code\": \"suffix\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"email\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"dob\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"taxvat\", \n            \"entity_type\": \"customer\"\n        },\n        {\n            \"attribute_code\": \"gender\", \n            \"entity_type\": \"customer\"\n        }\n    ]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `product_attributes.json` and `customer_attributes.json` files. Include attribute codes you want to include in the export along with the `entity_type` value of either `catalog_product` or `customer`. Note that the queries have some differences based on the information supported by each attribute type."
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Groups",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($customerGroupList: [String]) {\n  customerGroups(\n    identifiers: $customerGroupList\n  ) {\n    items {\n      name\n      tax_class\n    }\n  }\n}",
+								"variables": "{\n    \"customerGroupList\": [\"General\", \"Retailer\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`customer_groups.json`file. Include the group names or Ids you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Customer Segments",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($customerSegmentList: [String]) {\n\tcustomerSegments(identifiers: $customerSegmentList){\n\t\t\titems {\n  \t\t\t\tname\n  \t\t\t\tapply_to\n  \t\t\t\tconditions_serialized\n  \t\t\t\tdescription\n  \t\t\t\tsite_code\n\t\t\t}\n\t}\n}",
+								"variables": "{\n    \"customerSegmentList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": " Use to create the `customer_segments.json` file. Include the segment names or Ids you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Customers",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "default",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($customerEmailList: [String])     {\n\tcustomerExport(email: $customerEmailList) {\n\t\tdata\n\t}\n}",
+								"variables": "{\n    \"customerEmailList\": \"name1@email.com, name2@email.com\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`customers.json`file. Creates the same data set as a native customer export. At this time, the only filter that is supported is a comma delimited list of email addresses."
+					},
+					"response": []
+				},
+				{
+					"name": "Dynamic Blocks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($dynamicBlockList: [String]) {\n\tdynamicBlocksExport(identifiers: $dynamicBlockList) {\n\t\titems {\n\t\t\tbanner_content\n\t\t\tname\n\t\t\tsegments\n\t\t\tstore_view_code\n\t\t\ttype\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"dynamicBlockList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `dynamic_blocks.json` file. Include the Dynamic Block names or IDs you want to include in the export. This is different than the core _dynamicBlocks_ query. It does use the same DynamicBlock Type, but it will not return all the information that the core query returns."
+					},
+					"response": []
+				},
+				{
+					"name": "Gift Cards",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($giftcardCategoryList: [String]) {\n  productExport(categoryIds: $giftcardCategoryList) {\n    data\n  }\n}",
+								"variables": "{\n    \"giftcardCategoryList\": \"4\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Used to create the`gift_cards.json`file.\n\nWhen Gift Cards are imported along with other products, the row will be skipped with an error.\n\nGift cards need to be imported separatly. The same`productExport`query is used, just restricted to only Gift Cards.\n\nThere is no issue if the Gift Cards are also included in the main products file as they will be skipped during import."
+					},
+					"response": []
+				},
+				{
+					"name": "Media Export",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($categoryList: String, $blockList: String, $dynamicBlockList: String, $pageList: String, $templateList: String, $cmsDir: String) {\n  imagesExtract(\n    categoryIds: $categoryList\n    blockIds: $blockList\n    dynamicBlockIds: $dynamicBlockList\n    pageIds: $pageList\n    templateIds: $templateList\n    cmsDir: $cmsDir\n  ) {\n    zip_file_download\n    zip_file_server_path\n  }\n}",
+								"variables": "{\n    \"categoryList\": \"\",\n    \"blockList\": \"\",\n    \"dynamicBlockList\": \"\",\n    \"pageList\": \"\",\n    \"templateList\": \"\",\n    \"cmsDir\": \"\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Creates a downloadable, Data Installer compatible `.zip` archive of all images contained in the given elements. \n\n`categoryIds` is the list of categories containing the products to retrieve media from (likely the identical list from the `productExport` query).\n\n`cmsDir` is optional: Value is single directory under media\\\\wysiwyg to extract images from. Only include if you need to extract additional images not included in the existing blocks, pages, etc. If left empty all wysiwyg images will be extracted."
+					},
+					"response": []
+				},
+				{
+					"name": "MSI Sources",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($warehouseList: [String]) {\n\tmsiSource(identifiers: $warehouseList){\n\t\titems {\n\t\t\tcity\n\t\t\tcontact_name\n\t\t\tcountry_id\n\t\t\tdescription\n\t\t\temail\n\t\t\tenabled\n\t\t\tfax\n\t\t\tfrontend_description\n\t\t\tfrontend_name\n\t\t\tis_pickup_location_active\n\t\t\tlatitude\n\t\t\tlongitude\n\t\t\tname\n\t\t\tphone\n\t\t\tpostcode\n\t\t\tregion_id\n\t\t\tsource_code\n\t\t\tstreet\n\t\t\tuse_default_carrier_config\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"warehouseList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`msi_source.json`file. Include the source codes you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "MSI Stocks",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($stockList: [String]) {\n\tmsiStock(identifiers: $stockList){\n\t\titems {\n\t\t\tsite_code\n\t\t\tsource_code\n\t\t\tstock_name\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"stockList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`msi_stock.json`file. Include the stock names or Ids you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "MSI Stock Sources",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($stockSourceCodeList: [String]) {\n\tstockSourcesExport(sourceCode: $stockSourceCodeList) {\n\t    data\n\t}\n}",
+								"variables": "{\n    \"stockSourceCodeList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`stock_sources.json`file that sets product inventory for each source. Include the source codes to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Pages",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($pageList: [String]) {\n\tcmsPages(identifiers: $pageList){\n\t\t\titems {\n  \t\t\t\tstore_view_code\n  \t\t\t\tidentifier\n  \t\t\t\ttitle\n  \t\t\t\tpage_layout\n  \t\t\t\tcontent_heading\n  \t\t\t\tcontent:page_content\n  \t\t\t\tmeta_description\n  \t\t\t\tmeta_keywords\n  \t\t\t\tmeta_title\n\t\t\t}\n\t}\n}",
+								"variables": "{\n    \"pageList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`pages.json`file. Include the page identifiers or Ids you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Page Builder Templates",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($templatesList: [String]) {\n\tpageBuilderTemplates(identifiers: $templatesList) {\n\t\titems {\n\t\t\tcontent\n\t\t\tcreated_for\n\t\t\tname\n\t\t\tpreview_image\n\t\t\trequires{\n\t\t\t\tid\n\t\t\t\tidentifier\n\t\t\t\tname\n\t\t\t\ttype\n\t\t\t}\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"templatesList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`templates.json`file to import Page Builder Templates. Include the template names or IDs you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Product Attributes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($productAttributes: [AttributeInput!]!) {\n  customAttributeMetadata(\n    attributes: $productAttributes\n  ) {\n    items {\n      attribute_code\n      store_view_code\n      frontend_input: input_type\n      attribute_options {\n        value\n        label\n        swatch_value\n      }\n      storefront_properties {\n        is_filterable: use_in_layered_navigation\n        used_in_product_listing: use_in_product_listing\n        is_filterable_in_search: use_in_search_results_layered_navigation\n        is_visible_on_front: visible_on_catalog_pages\n        position\n      }\n      admin_properties {\n        additional_data\n        attribute_set\n        frontend_label\n        is_comparable\n        is_filterable_in_grid\n        is_html_allowed_on_front\n        is_pagebuilder_enabled\n        is_required_in_admin_store\n        is_searchable\n        is_used_for_price_rules\n        is_used_for_promo_rules\n        is_used_in_grid\n        is_visible\n        is_visible_in_advanced_search\n        is_visible_in_grid\n        is_wysiwyg_enabled\n        search_weight\n        used_for_sort_by\n      }\n    }\n  }\n}",
+								"variables": "{\n    \"productAttributes\":        \n    [\n        {\n            \"attribute_code\": \"color\", \n            \"entity_type\": \"catalog_product\"\n        }, \n        {\n            \"attribute_code\": \"manufacturer\", \n            \"entity_type\": \"catalog_product\"\n        }\n    ]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `product_attributes.json` and `customer_attributes.json` files. Include attribute codes you want to include in the export along with the `entity_type` value of either `catalog_product` or `customer`. Note that the queries have some differences based on the information supported by each attribute type."
+					},
+					"response": []
+				},
+				{
+					"name": "Products",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($productCategoryList: [String]) {\n  productExport(categoryIds: $productCategoryList) {\n    data\n  }\n}",
+								"variables": "{\n    \"productCategoryList\": \"4, 5\"\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`products.json`file.\n\nCreates the same data set as a native product export. At this time, the only product filter that is supported is a list of category ids to export products from."
+					},
+					"response": []
+				},
+				{
+					"name": "Product Reviews",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($skusList: [String], $pageSize: Int, $currentPage: Int) {\n\tproducts(\n\tfilter: {\n\t\tsku:{\n\t\t\tin: $skusList\n\t\t}\n\t}\n\tpageSize: $pageSize\n\tcurrentPage: $currentPage\n\t) {\n\t\titems{\n\t\tsku\n\t\tstore_view_code\n\t\treviews{\n\t\t\titems{\n\t\t\t\tsummary\n\t\t\t\ttext\n\t\t\t\tnickname\n\t\t\t\tratings_breakdown{\n\t\t\t\t\tname\n\t\t\t\t\tvalue\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"skusList\": [\"sku1\", \"sku2\"],\n    \"pageSize\": 200,\n    \"currentPage\": 1\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`reviews.json`file.\n\nThe product query contains the data necessary to populate product reviews so there is no unique reveiws query.\n\nSearch and filter functionality follows the documented features of the products query"
+					},
+					"response": []
+				},
+				{
+					"name": "Reward Exchange Rate",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($exchangeRuleList: [String]) {\n\trewardsPointsExchangeRate(identifiers: $exchangeRuleList) {\n\t\titems {\n\t\t\tcurrency_amount\n\t\t\tcustomer_group\n\t\t\tdirection\n\t\t\tpoints\n\t\t\tsite_code\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"exchangeRuleList\": [\"1\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`reward_exchange_rate.json`file. Include the IDs you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Settings",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n\tdataInstallerStoreSettings {\n\t\tstore_code\n\t\tstore_view_code\n\t\tsite_code\n\t}\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`settings.json`file.\n\n**Advanced Query:** Unless you are overriding the default settings, do not include the arguments. Including them in the query return is also optional unless you are overriding them. (See example)."
+					},
+					"response": []
+				},
+				{
+					"name": "Store Configurations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n\tstoreConfigurations(additionalSettings:[\n        \"design/header/logo_src\",\n        \"design/head/shortcut_icon\",\n        \"design/email/logo\",\n        \"design/head/includes\",\n        ])  {\n\titems {\n\t\tpath\n\t\tscope\n\t\tscope_code\n\t\tvalue\n\t}\n\t}\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `store_configurations.json` file. `additionalSettings` is optional. This would include the `path` from `core_config_data` of settings not included in the default list. Configurations are retrieved from the store view scope and uses the same inheritance as the configuration. For example, if you do not have `Welcome Text` set at your Store View scope, it will return the value set for Website or Default. If a setting has no value set that path will not be included in the query results. It is important to note that at this time only the Store View scope is used. There are many options that are set at the Website scope. Those would be retrieved, but then interpreted as Store View scope, so therefore would be imported but not used. If you need to use other scopes, or a mixture of scopes, you should supplement this file with the manual .csv configuration files available.\n\n**Default Settings Included**\n\n| Setting | Path |\n| --- | --- |\n| Stores->Configuration->Catalog->Catalog->Date & Time Custom Options->Use JavaScript Calendar | catalog/custom_options/use_calendar |\n| Content->Configuration->HTML Head->Scripts & Style Sheets | design/head/includes |\n| Content->Configuration->HTML Head->Favicon | design/head/shortcut_icon |\n| Content->Configuration->Header->Logo Image | design/header/logo_src |\n| Content->Configuration->Header->Welcome Text | design/header/welcome |\n| Stores->Configuration->General->General->Store Information->Store Name | general/store_information/name |\n| Stores->Configuration->General->Web->Default Pages->CMS Home Page | web/default/cms_home_page |"
+					},
+					"response": []
+				},
+				{
+					"name": "Stores",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query {\n\tstoreConfig {\n\t\tis_default_view:is_default_store\n\t\tis_default_store:is_default_store_group\n\t\troot_category_id\n\t\troot_category_uid\n\t\tstore_view_code:store_code\n\t\tstore_code:store_group_code\n\t\tstore_name:store_group_name\n\t\tview_name:store_name\n\t\tview_order:store_sort_order\n\t\tsite_code:website_code\n\t\tsite_name:website_name\n\t\tstore_root_category:root_cateogry_name\n\t\ttheme\n\t\ttheme_fallback\n\t}\n}",
+								"variables": ""
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `stores.json` file. The value of`fallback_theme`will be the same as`theme,`so it will have to be changed if needed."
+					},
+					"response": []
+				},
+				{
+					"name": "Theme Customizer",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query($skinList: [String]) {\n    themeCustomizer(identifiers: $skinList) {\n        items {\n            additional_css\n            applied_to\n            background_color\n            block_content_background_color\n            button_background_color\n            button_link_color\n            button_link_hover_color\n            category_grid_background_color\n            name\n            nav_background_color\n            nav_dropdown_background_color\n            nav_dropdown_link_color\n            nav_dropdown_link_hover_color\n            nav_link_color\n            nav_link_hover_color\n            primary_font_color\n            primary_heading_color\n            primary_link_color\n            primary_link_hover_color\n            primary_price_color\n            product_view_background_color\n            top_bar_color\n        }\n    }\n}",
+								"variables": "{\n    \"skinList\": [\"10\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the theme_customizer`.json` file. The value of`fallback_theme`will be the same as`theme,`so it will have to be changed if needed."
+					},
+					"response": []
+				},
+				{
+					"name": "Upsells",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($upsellsList: [String]) {\n\tupsells(identifiers: $upsellsList) {\n\t\titems {\n\t\t\tactions_serialized\n\t\t\tapply_to\n\t\t\tconditions_serialized\n\t\t\tcustomer_segments\n\t\t\tname\n\t\t\tsort_order\n\t\t\tpositions_limit\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"upsellsList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the`upsells.json`file to populate Related Products Cross Sells and Upsells. Include the Ids or names you want to include in the export."
+					},
+					"response": []
+				},
+				{
+					"name": "Widgets",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "store",
+								"value": "{{storeViewCode}}",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{authorizationUser}}|{{authorizationPassword}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "graphql",
+							"graphql": {
+								"query": "query ($widgetList: [String]) {\n\twidgets(identifiers: $widgetList) {\n\t\titems {\n\t\t\tblock_reference\n\t\t\tentities\n\t\t\tinstance_type\n\t\t\tlayout_handle\n\t\t\tpage_for\n\t\t\tpage_group\n\t\t\tpage_template\n\t\t\tsort_order\n\t\t\tstore_view_code\n\t\t\ttheme\n\t\t\ttitle\n\t\t\twidget_parameters\n\t\t}\n\t}\n}",
+								"variables": "{\n    \"widgetList\": [\"1\", \"2\"]\n}"
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/graphql",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"graphql"
+							]
+						},
+						"description": "Use to create the `widgets.json` file to populate widgets. Include the IDs or names you want to include in the export."
+					},
+					"response": []
+				}
+			],
+			"description": "These queries return json content to be saved as json files to populate a data pack."
+		}
+	]
+}
