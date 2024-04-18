@@ -1,0 +1,33 @@
+{
+	"id": "53d21ce2-08cc-4651-8ef1-564a6a23d197",
+	"values": [
+		{
+			"key": "storeViewCode",
+			"value": "default",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "authorizationUser",
+			"value": "admin",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "authorizationPassword",
+			"value": "admin4tls",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "baseUrl",
+			"value": "",
+			"type": "default",
+			"enabled": true
+		}
+	],
+	"name": "Globals",
+	"_postman_variable_scope": "globals",
+	"_postman_exported_at": "2024-04-18T14:21:38.655Z",
+	"_postman_exported_using": "Postman/10.24.22"
+}
